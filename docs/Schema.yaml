@@ -1,0 +1,142 @@
+openapi: 3.1.0
+info:
+  title: GPT Google Services Integration
+  version: 1.0.0
+servers:
+  - url: https://www.googleapis.com
+paths:
+  /calendar/v3/calendars/primary/events:
+    get:
+      summary: List events from a calendar within a specific time range
+      operationId: listCalendarEvents
+      parameters:
+        - name: timeMin
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: The minimum time an event starts to be returned. Specified as an RFC3339 timestamp.
+        - name: timeMax
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: The maximum time an event starts to be returned. Specified as an RFC3339 timestamp.
+    post:
+      summary: Create a new event in a calendar
+      operationId: createCalendarEvent
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summary:
+                  type: string
+                start:
+                  type: object
+                  properties:
+                    dateTime:
+                      type: string
+                end:
+                  type: object
+                  properties:
+                    dateTime:
+                      type: string
+      responses:
+        "201":
+          description: Event created
+  /calendar/v3/calendars/primary/events/{eventId}:
+    put:
+      summary: Update an existing event in a calendar
+      operationId: updateCalendarEvent
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summary:
+                  type: string
+                start:
+                  type: object
+                  properties:
+                    dateTime:
+                      type: string
+                end:
+                  type: object
+                  properties:
+                    dateTime:
+                      type: string
+      responses:
+        "201":
+          description: Event created
+    delete:
+      summary: Delete an event from a calendar
+      operationId: deleteCalendarEvent
+      parameters:
+        - name: calendarId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Event deleted
+components:
+  schemas:
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        summary:
+          type: string
+        start:
+          type: object
+          properties:
+            dateTime:
+              type: string
+        end:
+          type: object
+          properties:
+            dateTime:
+              type: string
+
+securitySchemes:
+  OAuth2:
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+        tokenUrl: https://oauth2.googleapis.com/token
+        scopes:
+          https://www.googleapis.com/auth/calendar.events: Manage your calendar events
+security:
+  - OAuth2: []
